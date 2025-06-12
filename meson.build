@@ -12,6 +12,14 @@ if not glfw_lib.found()
   glfw_lib = glfw_proj.get_variable('glfw3')
 endif
 
+# For ImGui, you might need to be more specific about which backends
+if host_machine.system() == 'windows'
+  imgui_lib = dependency('imgui', required: false, 
+                        modules: ['imgui::imgui', 'imgui::glfw', 'imgui::opengl3'])
+else
+  imgui_lib = dependency('imgui', required: false)
+endif
+
 if not imgui_lib.found()
   imgui_proj = subproject('imgui')
   imgui_lib = imgui_proj.get_variable('imgui')
