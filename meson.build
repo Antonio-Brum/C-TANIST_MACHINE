@@ -12,43 +12,6 @@ if not glfw_lib.found()
   glfw_lib = glfw_proj.get_variable('glfw3')
 endif
 
-# For ImGui, you might need to be more specific about which backends
-if host_machine.system() == 'windows'
-  imgui_lib = dependency('imgui', required: false, 
-                        modules: ['imgui::imgui', 'imgui::glfw', 'imgui::opengl3'])
-else
-  imgui_lib = dependency('imgui', required: false)
-endif
-
-if not imgui_lib.found()
-  imgui_proj = subproject('imgui')
-  imgui_lib = imgui_proj.get_variable('imgui')
-endif
-
 deps = [glfw_lib, imgui_lib]
-
-opengl_dep = dependency('gl', required: false)
-if not opengl_dep.found()
-  if host_machine.system() == 'windows'
-    opengl_dep = dependency('opengl32', required: false)
-    if not opengl_dep.found()
-      opengl_dep = find_library('opengl32', required: true)
-    endif
-  else
-    opengl_dep = find_library('GL', required: true)
-  endif
-endif
-deps += [opengl_dep]
-
-if host_machine.system() == 'windows'
-  gdi32_dep = find_library('gdi32', required: false)
-  user32_dep = find_library('user32', required: false)
-  if gdi32_dep.found()
-    deps += [gdi32_dep]
-  endif
-  if user32_dep.found()
-    deps += [user32_dep]
-  endif
-endif
 
 executable('pentacle', sources: srcs, dependencies: deps, include_directories: incdir)
